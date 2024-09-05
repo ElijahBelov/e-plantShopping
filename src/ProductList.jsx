@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useDispatch} from "react-redux";
 import './ProductList.css'
 import CartItem from './CartItem';
-import { addItem } from './CartSlice';
+import {addItem} from './CartSlice';
 
 
 function ProductList() {
@@ -247,7 +247,6 @@ function ProductList() {
 
     const handleAddToCart = (plant) => {
         setDisabledPlants((prevState) => ({...prevState, [plant.name]: true}));
-        console.log()
         dispatch(addItem(plant));
     }
 
@@ -262,7 +261,7 @@ function ProductList() {
         setShowCart(false);
     };
 
-    const isInCart = (plantName) => {
+    const isDisabled = (plantName) => {
         return plantName in disabledPlants;
     }
 
@@ -303,18 +302,21 @@ function ProductList() {
                 <div className="product-grid">
                     {plantsArray.map((plantCat, catIndex) => (
                         <>
-                            <h2 className="plant_heading" key={catIndex}>{plantCat.category}</h2>
-                            <div className="product-list" key={catIndex}>
+                            <h2 className="plant_heading" key={"plant_heading_" + catIndex}>{plantCat.category}</h2>
+                            <div className="product-list" key={"product-list-" + catIndex}>
 
                                 {
                                     plantCat.plants.map((plant, plantIndex) => (
-                                        <div className="product-card" key={plantIndex}>
+                                        <div className="product-card" key={"product-card-" + plantIndex}>
                                             <h3 className="product-title">{plant.name}</h3>
                                             <img className="product-image" src={plant.image}/>
                                             <div className="product-price">{plant.cost}</div>
                                             <div>{plant.description}</div>
-                                            <button className={isInCart(plant.name) ? "product-button added-to-cart" : "product-button"}
-                                                    onClick={() => handleAddToCart(plant)}>Add to Cart
+                                            <button
+                                                className={isDisabled(plant.name) ? "product-button added-to-cart" : "product-button"}
+                                                onClick={() => handleAddToCart(plant)}
+                                                disabled={isDisabled(plant.name)}>
+                                                {isDisabled(plant.name) ? "Added to Cart" : "Add to Cart"}
                                             </button>
                                         </div>
                                     ))

@@ -1,2 +1,4 @@
 clickable logo in get started
 plantslice
+warnings, esp on key click
+unstyle object productlist.jsx
