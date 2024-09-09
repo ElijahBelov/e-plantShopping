@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import './ProductList.css'
 import CartItem from './CartItem';
 import {addItem} from './CartSlice';
@@ -8,9 +8,15 @@ import {addItem} from './CartSlice';
 function ProductList() {
     const dispatch = useDispatch();
 
+    const initialDisabledPlants = {};
+
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [disabledPlants, setDisabledPlants] = useState({});
+    const [disabledPlants, setDisabledPlants] = useState(initialDisabledPlants);
+
+    const cart = useSelector(state => state.cart.items);
+    const totalItems = useSelector(state => state.cart.totalItems);
+
 
     const plantsArray = [
         {
@@ -240,6 +246,7 @@ function ProductList() {
         fontSize: '30px',
         textDecoration: 'none',
     }
+
     const handleCartClick = (e) => {
         e.preventDefault();
         setShowCart(true); // Set showCart to true when cart icon is clicked
@@ -258,6 +265,11 @@ function ProductList() {
 
     const handleContinueShopping = (e) => {
         e.preventDefault();
+        let plantsInCart = initialDisabledPlants;
+        cart.forEach((item) => (
+            plantsInCart = {...plantsInCart, [item.name]: true}
+        ));
+        setDisabledPlants((prevState) => (plantsInCart));
         setShowCart(false);
     };
 
@@ -284,8 +296,9 @@ function ProductList() {
                     <div><a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
                     <div><a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
                         <h1 className='cart'>
+                            <div className="cart_quantity_count">{totalItems}</div>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor"
-                                 height="68" width="68">
+                                 height="68" width="68" className="cart-icon">
                                 <rect width="156" height="156" fill="none"></rect>
                                 <circle cx="80" cy="216" r="12"></circle>
                                 <circle cx="184" cy="216" r="12"></circle>
